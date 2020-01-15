@@ -5,6 +5,7 @@
     position: absolute;
     left:100px;
     top: 200px;
+    display: none;
 }
 /*#img
 {
@@ -14,22 +15,6 @@
     left:100px;
     top: 200px;
 }*/
-#img0
-{
-    display: block;
-}
-#img1
-{
-    display: none;
-}
-#img2
-{
-    display: none;
-}
-#img3
-{
-    display: none;
-}
 #last
 {
     position: absolute;
