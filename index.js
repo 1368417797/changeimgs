@@ -1,87 +1,75 @@
-setInterval(next,2000)//计时器调用下一张函数
+// imglist,将作为img的src
+var img_list = [
+    "./img/img1.jpg",
+    "./img/img2.png",
+    "./img/img3.jpg",
+    "./img/img4.jpg",
+]
+var play_list = img_list
+// 自动播放时间
+const TIME = 2000
+var my_img_show
+// 用来clearInterval
+var time_controller = null;
 
-var n=0;
 
-var p=0;
-//切换图片的俩变量
-var flag=1;
-//鼠标事件的标志变量
-var img=document.querySelectorAll("img");
+window.onload = function () {
+    my_img_show = document.getElementById("my-img-show")
+    document.getElementById("next").addEventListener("click", nextPicture)
+    document.getElementById("last").addEventListener("click", lastPicture)
+    my_img_show.addEventListener("mouseover", () => {
+        // 清除interval
+        clearInterval(time_controller)
+        console.warn("stop auto play")
+    })
+    my_img_show.addEventListener("mouseleave", () => {
+        autoPlay()
+        console.warn("start auto play")
+    })
+    // init img 
+    // 因为在html里面,src为空.
+    updataImg()
 
-img.forEach(element => {
+    // 上面全是初始化工作
 
-    element.id="img"+n;
-    n=n+1;
 
-})
-//设定每张图的id，如需加图直接加然后class=“img”即可
-var num=n;
-//记录img数便于之后取余运算
-n=1;
-
-document.getElementById("img0").style.display = "block";
-//初始化n和第一张图
-
-document.getElementById("img").addEventListener('mouseover',change1)
-
-function change1()
-{
-    flag=2;
+    // 作为入口,开始第一次执行
+    autoPlay()
 }
 
-document.getElementById("img").addEventListener('mouseleave',change2)
-
-function change2()
-{
-    flag=1;
+/**
+ * 更新渲染视图,也就是数据修改了,呈现出来.
+ * 如果是现代框架vue的话,数据修改会触发函数,自动通知视图层面更新视图.
+ */
+function updataImg() {
+    my_img_show.setAttribute("src", play_list[0])
 }
-//鼠标事件
-document.getElementById("next").addEventListener('click',next);
-document.getElementById("last").addEventListener('click',last);
-
-function next()
-{
-    if(flag == 2)
-    {
-        return;
-    }
-    n=n%num;
-
-    var img1="img"+n;
-    
-    p=p%num;
-
-    var img2="img"+p;
-
-    console.log(n);
-    console.log(p);
-
-    document.getElementById([img1]).style.display = "block";
-    document.getElementById([img2]).style.display = "none";
-
-
-    p=p+1;
-    n=n+1;
+/**
+ * setInterval自行查文档这是个啥.
+ * 和setTimeout()一起对比.
+ */
+function autoPlay() {
+    time_controller = setInterval(nextPicture, TIME)
 }
 
-function last()
-{
-    if(flag == 2)
-    {
-        return;
-    }
-    var q=n;
-    p=p-1;
-    n=n-1;
-    if(n<0){n=3};
-    if(p<0){p=3};
-    console.log(n);
-    console.log(p);
-    var img1="img"+n;
-
-    var img2="img"+q;
-    document.getElementById([img1]).style.display = "block";
-    document.getElementById([img2]).style.display = "none";
-
+function nextPicture() {
+    console.log("onnext")
+    // 好好看这个.play_list 完全可以只有两个,就像是聚焦框一样,聚焦在img_list上.
+    // play_list 是 img_list 的子集
+    /**
+     * 好奇的话,console看一下,play_list.shift()的返回值,是啥.
+     * play_list.shift() pop(),这两个方法的返回值,都是被弹出来的数据.
+     * 然后把这个数据作为插入的数据,插入到数组.
+     * 实现了把第一个数值移动到最后一个.其他顺着往前移动.
+     */
+    play_list.push(play_list.shift())
+    console.log("play_list:" + play_list)
+    updataImg();
 }
-//两个函数下一张和上一张
+
+function lastPicture() {
+    console.log("onlast")
+    play_list.unshift(play_list.pop())
+    console.log("play_list:" + play_list)
+    updataImg()
+}
